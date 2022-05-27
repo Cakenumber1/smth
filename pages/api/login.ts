@@ -9,8 +9,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       if (req.body.validate) {
         return res.status(400).json(req.body.validate);
       }
-      const { mail, pass } = req.body;
-      const r = await login(mail, pass);
+      const { mail, password } = req.body;
+      const r = await login(mail, password);
       switch (r) {
         case 404:
           return res.status(404).json(`User with ${mail} doesn't exist`);

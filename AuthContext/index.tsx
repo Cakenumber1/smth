@@ -68,13 +68,18 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       const token = window.localStorage.getItem('authToken');
       if (token) {
         const fetchData = async () => {
-          const data = await checkToken(token);
-          if (data) {
-            setCurrentUser(jwt.decode(token) as IUser);
+          try {
+            const data = await checkToken(token);
+            if (data) {
+              setCurrentUser(jwt.decode(token) as IUser);
+            }
+          } catch (e) {
+            console.error(e);
           }
-          setLoading(false);
         };
-        fetchData().catch(console.error);
+        fetchData().finally(() => setLoading(false));
+      } else {
+        setLoading(false);
       }
     }
   }, []);

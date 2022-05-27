@@ -10,9 +10,9 @@ type Props = {
 
 type IAuth = {
   currentUser: IUser | null,
-  login: (mail: string, password: string) => void,
+  login: (mail: string, password: string) => Promise<void>,
   logout: () => void,
-  signup: (mail: string, username: string, password: string) => void,
+  signup: (mail: string, username: string, password: string) => Promise<void>,
 };
 
 type IUser = {

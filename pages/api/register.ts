@@ -14,7 +14,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       if (r) {
         return res.status(200).json(r);
       }
-      return res.status(400).json(`User ${username} already exists`);
+      return res.status(400).json(`User ${mail} already exists`);
     }
     default:
   }

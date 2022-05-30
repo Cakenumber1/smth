@@ -1,16 +1,46 @@
-import { Chat } from 'api/server/models/Chat';
+import { RpcRoom } from 'api/server/models/Room';
 import { User } from 'api/server/models/User';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
-import { generateAccessToken } from 'util/accessToken/generateAccessTokem';
+import { generateAccessToken } from 'util/accessToken';
+import { RoomStatus } from 'util/enums';
 
 const url = `mongodb+srv://admin:${process.env.NEXT_PUBLIC_PASSWORD}@cluster0.dfouy.mongodb.net/?retryWrites=true&w=majority`;
 
 mongoose.connect(url).then();
 
-export const createChat = async () => {
-  const chatModel = new Chat({ name: 'Chat1' });
-  await chatModel.save();
+const clearRooms = () => {
+  const outdated = new Date(Date.now() - 300000);
+
+  RpcRoom.deleteMany({
+    $and: [
+      { created: { $lt: outdated } },
+      { status: RoomStatus.PREP },
+    ],
+  }, (err) => {
+    if (err) console.log(err);
+    console.log('Successful deletion');
+  });
+};
+
+setInterval(() => {
+  clearRooms();
+}, 300000); // repeat in 5 min
+
+export const createRpcRoom = async (access: boolean, owner: string, password?: string) => {
+  const rooms = await RpcRoom.find({ owner });
+  if (rooms.length > 3) {
+    return { error: 'limit of rooms per user reached' };
+  }
+  const rpcModel = new RpcRoom({
+    access, owner, password,
+  });
+  try {
+    const a = await rpcModel.save();
+    return a;
+  } catch (e) {
+    return { error: 'smth went wrong' };
+  }
 };
 
 export const register = async (mail: string, username: string, password: string) => {

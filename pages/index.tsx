@@ -1,6 +1,7 @@
 import { useAuth } from 'AuthContext';
 import withAuth from 'components/HOCs/withAuthHOC';
 import type { NextPage } from 'next';
+import Link from 'next/link';
 
 const Home: NextPage = () => {
   const { logout, currentUser } = useAuth();
@@ -8,6 +9,9 @@ const Home: NextPage = () => {
     <div>
       <button type="button" onClick={() => logout()}>logout</button>
       <button type="button" onClick={() => console.log(currentUser)}>me</button>
+      <Link href="/rpc/">
+        RPC
+      </Link>
     </div>
   );
 };

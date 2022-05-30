@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { checkUserExists } from 'api/server/controller';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { verifyAccessToken } from 'util/accessToken/verifyAccessToken';
+import { verifyAccessToken } from 'util/accessToken';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {

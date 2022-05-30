@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { login } from 'api/server/controller';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import validate from 'util/midllewares/validate';
+import validate from 'util/midllewares';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {

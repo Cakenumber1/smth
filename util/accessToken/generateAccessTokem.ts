@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 
-import { ITokenPayload } from '../../interfaces';
+import { ITokenPayload } from '../interfaces';
 
 export const generateAccessToken = (user: ITokenPayload) => {
   const {

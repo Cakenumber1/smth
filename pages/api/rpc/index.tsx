@@ -56,5 +56,11 @@ const SocketHandler = (req: NextApiRequest, res: NextApiResponse & { socket: any
 
   res.end();
 };
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 // todo: add Auth middleware HOC
 export default SocketHandler;

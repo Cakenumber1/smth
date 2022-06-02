@@ -1,26 +1,22 @@
 import axios from 'axios';
 import * as jwt from 'jsonwebtoken';
+import { Types } from 'mongoose';
 import React, {
   useContext, useEffect, useMemo, useState,
 } from 'react';
+import { IUser } from 'util/interfaces';
 
 type Props = {
   children: React.ReactNode;
 };
 
+type IUserExt = IUser & { _id: Types.ObjectId };
+
 type IAuth = {
-  currentUser: IUser | null,
+  currentUser: IUserExt | null,
   login: (mail: string, password: string) => Promise<void>,
   logout: () => void,
   signup: (mail: string, username: string, password: string) => Promise<void>,
-};
-
-type IUser = {
-  username: string,
-  mail: string,
-  _id: string,
-  exp: number,
-  iat: number
 };
 
 const AuthContext = React.createContext({} as IAuth);
@@ -30,14 +26,14 @@ export function useAuth() {
 }
 
 export const AuthProvider: React.FC<Props> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<IUserExt | null>(null);
   const [loading, setLoading] = useState(true);
 
   async function signup(mail: string, username: string, password: string) {
     const res = await axios.post('/api/register/', { mail, username, password });
     if (res.status === 200) {
       window.localStorage.setItem('authToken', res.data);
-      setCurrentUser(jwt.decode(res.data as string) as IUser);
+      setCurrentUser(jwt.decode(res.data as string) as IUserExt);
     }
   }
 
@@ -45,7 +41,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
     const res = await axios.post('/api/login/', { mail, password });
     if (res.status === 200) {
       window.localStorage.setItem('authToken', res.data);
-      setCurrentUser(jwt.decode(res.data as string) as IUser);
+      setCurrentUser(jwt.decode(res.data as string) as IUserExt);
     }
   }
 
@@ -71,7 +67,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           try {
             const data = await checkToken(token);
             if (data) {
-              setCurrentUser(jwt.decode(token) as IUser);
+              setCurrentUser(jwt.decode(token) as IUserExt);
             }
           } catch (e) {
             console.error(e);

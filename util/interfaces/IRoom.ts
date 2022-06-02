@@ -8,5 +8,5 @@ export type IRoom = {
   created: number,
   chat: IMessage[],
   password?: string,
-  guest?: Types.ObjectId,
+  members?: Types.ObjectId[],
 };

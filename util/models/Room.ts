@@ -8,7 +8,7 @@ const RoomSchema = new Schema<IRoom>({
   status: { type: String, required: true, default: RoomStatus.PREP },
   created: { type: Number, required: true, default: Date.now() },
   password: { type: String },
-  guest: { type: Schema.Types.ObjectId, ref: 'UserSchema' },
+  members: { type: [Schema.Types.ObjectId], ref: 'UserSchema' },
   chat: {
     type: [{
       message: {

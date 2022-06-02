@@ -1,5 +1,7 @@
+import { Types } from 'mongoose';
+
 export type ITokenPayload = {
-  _id: string,
+  _id: Types.ObjectId,
   username: string,
   mail: string,
 };

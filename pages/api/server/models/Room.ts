@@ -1,11 +1,12 @@
 import { model, Schema } from 'mongoose';
 import { RoomStatus } from 'util/enums';
+import { IRoom } from 'util/interfaces';
 
-const RoomSchema = new Schema({
+const RoomSchema = new Schema<IRoom>({
   access: { type: Boolean, required: true },
   owner: { type: Schema.Types.ObjectId, ref: 'UserSchema', required: true },
   status: { type: String, required: true, default: RoomStatus.PREP },
-  created: { type: Date, required: true, default: Date.now() },
+  created: { type: Number, required: true, default: Date.now() },
   password: { type: String },
   guest: { type: Schema.Types.ObjectId, ref: 'UserSchema' },
   chat: {
@@ -17,4 +18,4 @@ const RoomSchema = new Schema({
   },
 });
 
-export const RpcRoom = model('RpcRoom', RoomSchema);
+export const RpcRoom = model<IRoom>('RpcRoom', RoomSchema);

@@ -27,7 +27,11 @@ setInterval(() => {
   clearRooms();
 }, 300000); // repeat in 5 min
 
-export const createRpcRoom = async (access: boolean, owner: string, password?: string) => {
+export const createRpcRoom = async (
+  access: boolean,
+  owner: string,
+  password?: string,
+): Promise<any> => {
   const rooms = await RpcRoom.find({ owner });
   if (rooms.length > 3) {
     return { error: 'limit of rooms per user reached' };
@@ -35,11 +39,16 @@ export const createRpcRoom = async (access: boolean, owner: string, password?: s
   const rpcModel = new RpcRoom({
     access, owner, password,
   });
+  const a = await rpcModel.save();
+  return a;
+};
+
+export const getNonPrivateRpcRooms = async () => {
   try {
-    const a = await rpcModel.save();
-    return a;
+    const rooms = await RpcRoom.find({ access: true });
+    return rooms;
   } catch (e) {
-    return { error: 'smth went wrong' };
+    return [];
   }
 };
 

@@ -45,11 +45,23 @@ export const createRpcRoom = async (
   const a = await rpcModel.save();
   return a;
 };
-
+// todo: rewrite with Promise All
 export const deleteRpcRoom = async (
   rid: Types.ObjectId,
 ): Promise<any> => {
-  await RpcRoom.findByIdAndDelete({ _id: rid });
+  const room = await RpcRoom.findById({ _id: rid });
+  if (room) {
+    if (room.members) {
+      for (let i = 0; i < room.members.length; i++) {
+        // eslint-disable-next-line no-await-in-loop
+        const user = await User.findById({ _id: room.members[i] });
+        user!.room = undefined;
+        // eslint-disable-next-line no-await-in-loop
+        await user!.save();
+      }
+    }
+    await room.remove();
+  }
 };
 
 export const getNonPrivateRpcRooms = async () => {

@@ -63,9 +63,10 @@ const Rpc: NextPage = () => {
   // Each frame check for subscribed events to happen & upd Data
   useEffect(() => {
     if (socket) {
-      let flag: Types.ObjectId;
+      let flag: Types.ObjectId | undefined;
       socket.on('get-rooms', (smth) => {
         const rooms = smth.rooms as IRoomExt[];
+        flag = undefined;
         for (let i = 0; i < rooms.length; i++) {
           if (rooms[i].members?.indexOf(currentUser!._id) !== -1) {
             flag = rooms[i]._id;

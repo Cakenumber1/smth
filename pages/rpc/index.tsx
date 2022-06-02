@@ -5,19 +5,10 @@ import { Types } from 'mongoose';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import {
-  Dispatch, SetStateAction,
   useEffect, useState,
 } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { IRoomExt } from 'util/interfaces';
-
-// Func to initialize bridge
-const socketInitializer = async (
-  setSocket: Dispatch<SetStateAction<Socket<DefaultEventsMap, DefaultEventsMap> | null>>,
-) => {
-  await fetch('/api/rpc');
-  setSocket(io());
-};
 
 // Func to send event of 'create-room' to io listener
 const handleCreate = async (
@@ -57,16 +48,12 @@ const Rpc: NextPage = () => {
 
   // Call Initialization func once
   useEffect(() => {
-    socketInitializer(setSocket);
-  }, []);
-
-  // Each frame check for subscribed events to happen & upd Data
-  useEffect(() => {
-    if (socket) {
-      let flag: Types.ObjectId | undefined;
-      socket.on('get-rooms', (smth) => {
+    fetch('/api/rpc').finally(() => {
+      setSocket(io());
+      const s = io();
+      s.on('get-rooms', (smth) => {
         const rooms = smth.rooms as IRoomExt[];
-        flag = undefined;
+        let flag: Types.ObjectId | undefined;
         for (let i = 0; i < rooms.length; i++) {
           if (rooms[i].members?.indexOf(currentUser!._id) !== -1) {
             flag = rooms[i]._id;
@@ -76,8 +63,9 @@ const Rpc: NextPage = () => {
         setCurRoom(flag);
         setData(rooms);
       });
-    }
-  });
+    });
+  }, []);
+
   // todo: split
   return (
     <div>
